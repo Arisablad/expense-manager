@@ -1,29 +1,33 @@
 import mongoose from "mongoose";
 
-const BankAccountSchema = new mongoose.Schema({
+const BankAccountSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     balance: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
-    owner: [{
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    expenses: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    expenses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Expense',
-        default: []
-    }]
+        ref: "Expense",
+        default: [],
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
+);
 
-}, {
-    timestamps: true
-})
+const BankAccount = mongoose.model("BankAccount", BankAccountSchema);
 
-
-const BankAccount = mongoose.model('BankAccount', BankAccountSchema)
-
-export default BankAccount
+export default BankAccount;
