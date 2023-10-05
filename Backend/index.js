@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import bankAccountRoutes from "./routes/bankAccountRoutes.js";
 import cookieParser from "cookie-parser";
 import expensesRoutes from "./routes/expensesRoutes.js";
+import bodyParser from "body-parser";
 // import routes from './routes';
 
 dotenv.config();
@@ -14,6 +15,7 @@ const app = express();
 
 // GLOBAL MIDDLEWARES
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
 

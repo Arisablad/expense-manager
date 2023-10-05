@@ -1,16 +1,21 @@
 import { create } from "zustand";
 
+type User = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+};
+
 type State = {
-  token: string;
+  user: User | Record<string, never>;
 };
 type Actions = {
-  setToken: (jwt: string) => void;
+  setUser: (data: User) => void;
 };
 
-const useStore = create<State & Actions>((set) => ({
-  token: "",
-  setToken: (jwt: string) => set(() => ({ token: jwt })),
-  removeToken: () => set({ token: "" }),
+export const useUserStore = create<State & Actions>((set) => ({
+  user: {},
+  setUser: (data: User) => set(() => ({ user: data })),
+  signOutUser: () => set({ user: {} }),
 }));
-
-export default useStore;
