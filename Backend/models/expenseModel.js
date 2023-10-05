@@ -14,6 +14,11 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      enum: ["expense", "income"],
+      required: true,
+    },
     account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "BankAccount",

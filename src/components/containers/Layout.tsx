@@ -6,9 +6,13 @@ import Sidebar from "@/components/Sidebar.tsx";
 function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <>
-      <TopHeader />
-      <div className={"min-w-screen min-h-screen h-full"}>
-        <div className={"px-4 py-12 flex min-h-screen bg-primaryColor"}>
+      <div
+        className={
+          "min-w-screen max-h-screen h-screen bg-red-300 overflow-y-hidden"
+        }
+      >
+        <TopHeader />
+        <div className={"px-4 py-12 flex h-full gap-2"}>
           <Sidebar />
           <div className={"w-full min-h-full"}>
             <Outlet>{children}</Outlet>

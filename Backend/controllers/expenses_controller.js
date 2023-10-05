@@ -4,8 +4,8 @@ import BankAccount from "../models/bankAccountModel.js";
 
 export const createExpense = async (req, res) => {
   try {
-    const { name, amount, category, account } = req.body;
-    if (!name || !amount || !category || !account) {
+    const { name, amount, category, account, type } = req.body;
+    if (!name || !amount || !category || !account || !type) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const expense = await Expense.create({
@@ -13,6 +13,7 @@ export const createExpense = async (req, res) => {
       amount,
       category,
       account,
+      type,
       owner: req.user._id,
     });
 
@@ -71,7 +72,7 @@ export const deleteExpense = async (req, res) => {
     await Expense.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Expense deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
     console.log(`Error in deleteExpense: ${error.message}`);
   }
 };
@@ -99,17 +100,17 @@ export const getSingleExpense = async (req, res) => {
     const expense = await Expense.findById(req.params.id);
     const user = await User.findById(req.user._id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     if (user._id.toString() !== req.user.id.toString()) {
-      return res.status(403).json({ message: "You're not authorized" });
+      return res.status(403).json({ error: "You're not authorized" });
     }
     if (!expense) {
-      return res.status(404).json({ message: "Expense not found" });
+      return res.status(404).json({ error: "Expense not found" });
     }
     res.status(200).json(expense);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
     console.log(`Error in getSingleExpense: ${error.message}`);
   }
 };

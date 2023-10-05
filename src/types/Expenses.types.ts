@@ -5,6 +5,7 @@ export type Expense = {
   category: string;
   account: string;
   owner: string;
+  type: "expense" | "income";
   createdAt?: string;
   updatedAt?: string;
 };

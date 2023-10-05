@@ -35,7 +35,7 @@ function HomePage() {
   }, []);
 
   return (
-    <div className={"h-full w-full bg-primaryColor"}>
+    <div className={"h-full w-full bg-primaryColor rounded-lg"}>
       <div className={"max-h-screen w-full flex p-4 gap-4"}>
         <div className={"flex flex-col w-full gap-8"}>
           <MostlyLikedCategories />

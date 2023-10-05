@@ -5,6 +5,9 @@ import Login from "@/pages/Login.tsx";
 import Layout from "@/components/containers/Layout.tsx";
 import HomePage from "@/pages/HomePage.tsx";
 import PrivateRoute from "@/router/PrivateRoute.tsx";
+import Bills from "@/pages/Bills.tsx";
+import Expenses from "@/pages/Expenses.tsx";
+import Settings from "@/pages/Settings.tsx";
 
 const routes = createBrowserRouter([
   {
@@ -19,6 +22,18 @@ const routes = createBrowserRouter([
       {
         path: "/home",
         element: <HomePage />,
+      },
+      {
+        path: "/bills",
+        element: <Bills />,
+      },
+      {
+        path: "/expenses",
+        element: <Expenses />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
       },
     ],
   },
