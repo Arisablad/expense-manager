@@ -25,7 +25,7 @@ function AuthService() {
         return Promise.reject(res.data);
       })
       .catch((err) => {
-        return Promise.reject(err.response.data);
+        return Promise.reject(err.response.data || err.message);
       });
   };
 

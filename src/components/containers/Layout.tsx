@@ -8,7 +8,7 @@ function Layout({ children }: { children?: React.ReactNode }) {
     <>
       <TopHeader />
       <div className={"min-w-screen min-h-screen h-full"}>
-        <div className={"px-4 py-12 flex min-h-screen"}>
+        <div className={"px-4 py-12 flex min-h-screen bg-primaryColor"}>
           <Sidebar />
           <div className={"w-full min-h-full"}>
             <Outlet>{children}</Outlet>

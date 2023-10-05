@@ -3,7 +3,6 @@ import generateTokenAndSetCookies from "../utils/generateTokenAndSetCookies.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
-  console.log("req.body", req.body);
   try {
     // get data from request body
     const { name, username, email, password, repeatPassword } = req.body;
@@ -42,7 +41,7 @@ export const signup = async (req, res) => {
       await generateTokenAndSetCookies(newUser._id, res);
       res.status(201).json({
         message: "User created successfully",
-        user: { name, username, email },
+        user: { name, username, email, _id: newUser._id },
       });
     } else {
       res.status(500).json({ error: "Invalid user data" });
@@ -67,11 +66,15 @@ export const signin = async (req, res) => {
     if (!isMatch | !user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
-    console.log(user);
     generateTokenAndSetCookies(user._id, res);
     res.status(200).json({
       message: "Logged in successfully",
-      user: { name: user.name, username: user.username, email: user.email },
+      user: {
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        _id: user._id,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -3,7 +3,6 @@ import { useUserStore } from "@/providers/ZusStore.tsx";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useUserStore((state) => state.user);
-  console.log("user private", user);
   if (Object.keys(user).length > 0) {
     return children;
   }

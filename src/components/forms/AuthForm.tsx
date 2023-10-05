@@ -13,49 +13,16 @@ import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast.ts";
 import AuthService from "@/services/AuthService.tsx";
 import { useUserStore } from "@/providers/ZusStore.tsx";
-
-const RegisterSchema = z
-  .object({
-    name: z.string().min(3, {
-      message: "Name must be at least 3 characters.",
-    }),
-    username: z.string().min(6, {
-      message: "Username must be at least 6 characters.",
-    }),
-    email: z
-      .string()
-      .min(1, { message: "This field has to be filled." })
-      .email("This is not a valid email."),
-    password: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
-    }),
-    repeatPassword: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
-    }),
-  })
-  .refine((data) => data.password === data.repeatPassword, {
-    message: "Passwords don't match",
-    path: ["repeatPassword"], // path of error
-  });
-
-const SignInSchema = z.object({
-  username: z.string().min(6, {
-    message: "Username must be at least 6 characters.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-});
+import { RegisterSchema, SignInSchema } from "@/models/AuthModels.ts";
 
 function AuthForm({ formType }: { formType: "login" | "register" }) {
   const { registerUser, loginUser } = AuthService();
   const navigate = useNavigate(); // react-router-dom v6
 
-  const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
   const registerForm = useForm<z.infer<typeof RegisterSchema>>({
@@ -81,9 +48,8 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
           toast({
             title: `Error`,
             description: `${data.error}`,
-            status: "error",
             duration: 3000,
-            isClosable: true,
+            variant: "destructive",
           });
           return;
         }
@@ -112,9 +78,8 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
           toast({
             title: `Error`,
             description: `${data.error}`,
-            status: "error",
             duration: 3000,
-            isClosable: true,
+            variant: "destructive",
           });
           return;
         }

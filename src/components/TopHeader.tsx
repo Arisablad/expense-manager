@@ -37,7 +37,7 @@ export default function TopHeader() {
     // MOBILE HEADER
     <>
       {expand ? (
-        <div className={"bg-primaryColor w-full h-12 md:hidden p-4"}>
+        <div className={"bg-secondaryColor w-full h-12 md:hidden p-4"}>
           <div
             className={
               "flex items-center h-full gap-2 text-white font-medium justify-between"
@@ -51,7 +51,7 @@ export default function TopHeader() {
       ) : (
         <div
           className={
-            "bg-primaryColor w-screen h-screen z-[50] fixed md:hidden text-white"
+            "bg-secondaryColor w-screen h-screen z-[50] fixed md:hidden text-white"
           }
         >
           <HamburgerMenuIcon
@@ -60,7 +60,7 @@ export default function TopHeader() {
           />
           <div
             className={
-              "bg-primaryColor w-full h-full flex flex-col items-center pt-14 text-white"
+              "bg-secondaryColor w-full h-full flex flex-col items-center pt-14 text-white"
             }
           >
             <Link
@@ -79,7 +79,7 @@ export default function TopHeader() {
       {/*  DESKTOP BAR */}
       <div
         className={
-          "hidden md:flex justify-between items-center bg-primaryColor w-full h-12 p-4"
+          "hidden md:flex justify-between items-center bg-secondaryColor w-full h-12 p-4"
         }
       >
         <img

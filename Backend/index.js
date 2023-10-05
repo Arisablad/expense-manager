@@ -13,11 +13,22 @@ dotenv.config();
 const PORT = process.env.PORT || 5003;
 const app = express();
 
+const origin =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5173"
+    : `https://${process.env.DOMAIN_URL}`;
+
 // GLOBAL MIDDLEWARES
-app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin,
+  }),
+);
 app.use(bodyParser.json());
-app.use(cors());
 app.use(cookieParser());
+app.use(express.json({ limit: "50mb" })); // To parse JSON data in the req.body
+app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);

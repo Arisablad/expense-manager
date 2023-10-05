@@ -27,8 +27,12 @@ const NAVIGATION_ITEMS = [
 
 function Sidebar() {
   return (
-    <div className={"hidden md:flex bg-amber-500 w-96 justify-center"}>
-      <div className={"mt-12 flex flex-col gap-4"}>
+    <div
+      className={
+        "hidden md:flex bg-secondaryColor w-96 justify-center rounded-xl"
+      }
+    >
+      <div className={"mt-12 flex flex-col gap-4 text-white"}>
         {NAVIGATION_ITEMS.map((item) => (
           <Link
             className={
@@ -38,7 +42,7 @@ function Sidebar() {
             to={item.title.toLowerCase()}
           >
             <div>
-              <item.icon className={"h-6 w-6 text-black"} />
+              <item.icon className={"h-6 w-6 text-white"} />
             </div>
             <div>{item.title}</div>
           </Link>
