@@ -8,7 +8,7 @@ function Layout({ children }: { children?: React.ReactNode }) {
     <>
       <div
         className={
-          "min-w-screen min-h-full overflow-y-auto sm:overflow-y-hidden bg-red-300 sm:max-h-screen"
+          "min-w-screen min-h-full overflow-y-auto overflow-x-auto sm:overflow-x-hidden sm:overflow-y-hidden bg-red-300 sm:max-h-screen"
         }
       >
         <TopHeader />

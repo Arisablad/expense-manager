@@ -4,6 +4,7 @@ import { Expense } from "@/types/Expenses.types.ts";
 
 type TransactionHistoryProps = {
   expenses: Expense[] | [];
+  getExpenses: () => Promise<void>;
 };
 function TransactionHistory({ expenses }: TransactionHistoryProps) {
   return (

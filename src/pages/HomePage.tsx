@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast.ts";
 import { Expense } from "@/types/Expenses.types.ts";
 import getMostlyLikedCategories from "@/utils/getMostlyLikedCategories.tsx";
 import { cn } from "@/lib/utils.ts";
+import ChartGenerator from "@/components/ChartGenerator.tsx";
 
 const OPTIONS = ["asc", "desc"];
 
@@ -14,9 +15,10 @@ function HomePage() {
   const [expenses, setExpenses] = useState<Expense[] | []>([]);
   const [active, setActive] = useState<string>("desc");
   const { toast } = useToast();
-  const mostLikedCategories = useMemo(() => {
-    return getMostlyLikedCategories(expenses, 3, active);
-  }, [expenses, active]);
+  const mostLikedCategories: [string, { count: number; total: number }][] =
+    useMemo(() => {
+      return getMostlyLikedCategories(expenses, 3, active);
+    }, [expenses, active]);
 
   console.log(mostLikedCategories);
 
@@ -69,8 +71,20 @@ function HomePage() {
             })}
           </div>
           <MostlyLikedCategories mostLikedCategories={mostLikedCategories} />
-          <div className={"bg-blue-950 h-96 rounded-lg p-4"}>
-            <h1 className={"text-3xl text-white"}>Here will be a graph</h1>
+          <div
+            className={
+              "bg-blue-950 h-96 rounded-lg p-4 flex items-center justify-center w-full overflow-x-auto"
+            }
+          >
+            <ChartGenerator
+              xAxisData={expenses.map((expense) => expense.category)}
+              yAxisData={expenses.map((expense) => {
+                if (expense.type === "expense") {
+                  return -expense.amount;
+                }
+                return expense.amount;
+              })}
+            />
           </div>
         </div>
         <TransactionHistory expenses={expenses} getExpenses={getExpenses} />

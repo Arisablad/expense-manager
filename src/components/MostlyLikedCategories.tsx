@@ -3,7 +3,7 @@ import { DevicePhoneMobileIcon } from "@heroicons/react/24/solid";
 function MostlyLikedCategories({
   mostLikedCategories,
 }: {
-  mostLikedCategories: string[];
+  mostLikedCategories: [string, { count: number; total: number }][];
 }) {
   return (
     <div className={"w-full flex-col"}>
