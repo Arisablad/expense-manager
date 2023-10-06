@@ -8,6 +8,23 @@ export const createExpense = async (req, res) => {
     if (!name || !amount || !category || !account || !type) {
       return res.status(400).json({ message: "All fields are required" });
     }
+
+    //substract or add balance from/to bank account based on expense value and type
+    const bankAccount = await BankAccount.findById(account);
+    if (!bankAccount) {
+      return res.status(404).json({ message: "Bank account not found" });
+    }
+    if (bankAccount.owner.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ message: "You're not authorized" });
+    }
+
+    if (type === "expense") {
+      bankAccount.balance = bankAccount.balance - amount;
+    } else {
+      bankAccount.balance = bankAccount.balance + amount;
+    }
+    await bankAccount.save();
+
     const expense = await Expense.create({
       name,
       amount,
@@ -25,7 +42,6 @@ export const createExpense = async (req, res) => {
       return res.status(403).json({ message: "You're not authorized" });
     }
 
-    const bankAccount = await BankAccount.findById(account);
     if (!bankAccount) {
       return res.status(404).json({ message: "Bank account not found" });
     }

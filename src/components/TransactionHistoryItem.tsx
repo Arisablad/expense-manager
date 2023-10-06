@@ -47,7 +47,9 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
             <div className={"flex justify-center items-center h-full bg"}>
               <div className={"flex gap-2"}>
                 <button
-                  className={"border border-white rounded p-4 bg-blue-950"}
+                  className={
+                    "border border-white rounded p-4 bg-blue-950 hover:bg-black/50 transition duration-300"
+                  }
                   onClick={() => {
                     setDropdown(false);
                   }}
@@ -55,7 +57,9 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
                   Edit
                 </button>
                 <button
-                  className={"border border-white rounded p-4 bg-blue-950"}
+                  className={
+                    "border border-white rounded p-4 bg-blue-950 hover:bg-black/50 transition duration-300"
+                  }
                   onClick={() => {
                     setDropdown(false);
                   }}
@@ -64,7 +68,9 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
                 </button>
 
                 <button
-                  className={"border border-white rounded p-4 bg-blue-950"}
+                  className={
+                    "border border-white rounded p-4 bg-blue-950 hover:bg-black/50 transition duration-300"
+                  }
                   onClick={() => {
                     setDropdown(false);
                   }}

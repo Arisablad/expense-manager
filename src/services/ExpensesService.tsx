@@ -14,7 +14,21 @@ function ExpensesService() {
       });
   };
 
-  return { getExpenses };
+  const addExpenseToDb = <T,>(data: T) => {
+    return apiClient
+      .post("/expenses/create", data)
+      .then((res) => {
+        if (res.status === 200) {
+          return Promise.resolve(res.data);
+        }
+        return Promise.reject(res.data);
+      })
+      .catch((err) => {
+        return Promise.reject(err.response.data);
+      });
+  };
+
+  return { getExpenses, addExpenseToDb };
 }
 
 export default ExpensesService;

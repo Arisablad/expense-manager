@@ -1,4 +1,3 @@
-import logo from "@/assets/logo.png";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -13,15 +12,40 @@ import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast.ts";
 import BankService from "@/services/BankService.tsx";
 import { useEffect, useState } from "react";
 import { ExpenseSchema } from "@/models/ExpensesModes.ts";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Bank } from "@/types/Banks.types.ts";
+import ExpensesService from "@/services/ExpensesService.tsx";
+
+const CATEGORIES = [
+  "entertainment",
+  "food",
+  "groceries",
+  "health",
+  "home",
+  "transportation",
+  "bills",
+  "utilities",
+  "other",
+];
+
+const EXPENSE_TYPES = ["expense", "income"];
+
 function CreateExpenseForm() {
   const { getBankAccounts } = BankService();
-  const [banks, setBanks] = useState([]);
+  const { addExpenseToDb } = ExpensesService();
+  const [banks, setBanks] = useState<Bank[] | []>([]);
+  const { toast } = useToast();
 
   const getAccounts = () => {
     return getBankAccounts()
@@ -37,39 +61,80 @@ function CreateExpenseForm() {
       });
   };
 
-  console.log("banki", banks);
-
   useEffect(() => {
     getAccounts();
   }, []);
 
   const expenseForm = useForm<z.infer<typeof ExpenseSchema>>({
     resolver: zodResolver(ExpenseSchema),
-    defaultValues: {},
+    defaultValues: {
+      name: "",
+      amount: 0,
+      category: "",
+      account: "",
+      type: undefined,
+    },
   });
 
   const createExpense = (data: z.infer<typeof ExpenseSchema>) => {
-    console.log(data);
+    addExpenseToDb(data)
+      .then((response) => {
+        if (response.error) {
+          toast({
+            title: "Error",
+            description: response.error,
+            duration: 3000,
+            variant: "destructive",
+          });
+          return;
+        }
+        toast({
+          title: "Success",
+          description: "Expense Created",
+          duration: 3000,
+          variant: "default",
+        });
+        expenseForm.reset({
+          name: "",
+          amount: 0,
+          category: "",
+          account: "",
+          type: undefined,
+        });
+        getAccounts();
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.error || error.message,
+          duration: 3000,
+          variant: "destructive",
+        });
+      });
   };
 
-  const { toast } = useToast();
+  // name, amount, category, account, type
 
   return (
     <div className=" h-screen w-full flex rounded-lg">
-      <div className="bg-primaryColor h-full w-full shadow-xl p-10 flex flex-col gap-4 text-sm rounded-lg ">
+      <div className="bg-primaryColor h-full w-full shadow-xl p-10 flex flex-col gap-4 text-sm rounded-lg items-center ">
         <Form {...expenseForm}>
           <form
             onSubmit={expenseForm.handleSubmit(createExpense)}
-            className="bg-secondaryColor shadow-xl p-10 flex flex-col gap-4 text-sm w-full h-full text-white rounded-lg"
+            className="w-full bg-secondaryColor shadow-xl p-2 flex flex-col gap-4 text-sm h-full text-white rounded-lg sm:w-2/3 sm:p-10"
           >
             <FormField
               control={expenseForm.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Expense Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input
+                      placeholder="Spotify"
+                      {...field}
+                      className={"text-black"}
+                    />
                   </FormControl>
                   <FormDescription>{/**/}</FormDescription>
                   <FormMessage />
@@ -78,22 +143,114 @@ function CreateExpenseForm() {
             />
             <FormField
               control={expenseForm.control}
-              name="password"
+              name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" type="password" {...field} />
+                    <Input
+                      placeholder="Price in zł"
+                      type={"number"}
+                      className={"text-black"}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>{/**/}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={expenseForm.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem className={"text-black"}>
+                  <FormLabel className={"text-white"}>Category</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={"p-10 sm:p-2.5"}>
+                        <SelectValue placeholder="Select a category of expense" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {CATEGORIES.map((category) => (
+                        <SelectItem value={category} key={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Group your expenses by category later{" "}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={expenseForm.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className={"text-black"}>
+                  <FormLabel className={"text-white"}>Expense Type</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a type of expense" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {EXPENSE_TYPES.map((type) => (
+                        <SelectItem value={type} key={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Group your expenses by type later{" "}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={expenseForm.control}
+              name="account"
+              render={({ field }) => (
+                <FormItem className={"text-black"}>
+                  <FormLabel className={"text-white"}>Bank Account</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a bank account to charge" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {banks.map((bank) => (
+                        <SelectItem value={bank._id} key={bank._id}>
+                          {`${bank.name} - ${bank.balance} zł`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Group your expenses by bank account later{" "}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button
               className={
-                "bg-[#4F46E5] py-8 w-full md:py-2 rounded-md text-white font-bold cursor-pointer hover:bg-[#181196]"
+                "bg-[#4F46E5] py-8 w-full md:py-2 rounded-md text-white font-bold cursor-pointer hover:bg-[#181196] transition duration-500 ease-in-out"
               }
+              type={"submit"}
+              disabled={expenseForm.formState.isSubmitting}
             >
               {" "}
               Create new expense
