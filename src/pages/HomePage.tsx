@@ -43,7 +43,7 @@ function HomePage() {
             <h1 className={"text-3xl text-white"}>Here will be a graph</h1>
           </div>
         </div>
-        <TransactionHistory expenses={expenses} />
+        <TransactionHistory expenses={expenses} getExpenses={getExpenses} />
       </div>
     </div>
   );

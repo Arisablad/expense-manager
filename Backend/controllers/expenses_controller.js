@@ -75,14 +75,30 @@ export const deleteExpense = async (req, res) => {
     }
 
     // Delete expense from user
-    // await User.findByIdAndUpdate(req.user._id, {
-    //   $pull: { expenses: req.params.id },
-    // })
+    await User.findByIdAndUpdate(req.user._id, {
+      $pull: { expenses: req.params.id },
+    });
 
     // Delete expense from bank account
     await BankAccount.findByIdAndUpdate(req.user._id, {
       $pull: { expenses: req.params.id },
     });
+
+    // ADD OR SUBTRACT BALANCE FROM BANK ACCOUNT BASED ON EXPENSE VALUE AND TYPE
+    const bankAccount = await BankAccount.findById(req.body.account);
+    if (!bankAccount) {
+      return res.status(404).json({ message: "Bank account not found" });
+    }
+    if (bankAccount.owner.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ message: "You're not authorized" });
+    }
+
+    if (req.body.type === "expense") {
+      bankAccount.balance = bankAccount.balance + req.body.amount;
+    } else {
+      bankAccount.balance = bankAccount.balance - req.body.amount;
+    }
+    await bankAccount.save();
 
     // Delete expense from database
     await Expense.findByIdAndDelete(req.params.id);

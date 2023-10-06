@@ -2,9 +2,51 @@ import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 import { ThreeDotsVertical } from "@/components/icons/SharedIcons.tsx";
 import { Expense } from "@/types/Expenses.types.ts";
 import { useState } from "react";
+import ExpensesService from "@/services/ExpensesService.tsx";
+import { useToast } from "@/components/ui/use-toast.ts";
 
 function TransactionHistoryItem({ expense }: { expense: Expense }) {
   const [dropdown, setDropdown] = useState(false);
+  const { removeExpenseFromDb } = ExpensesService();
+  const [blockButtons, setBlockButtons] = useState(false);
+  const { toast } = useToast();
+
+  const removeExpense = (
+    id: string,
+    type: string,
+    account: string,
+    amount: number,
+  ) => {
+    setBlockButtons(true);
+    removeExpenseFromDb(id, type, account, amount)
+      .then((response) => {
+        setDropdown(false);
+        if (response.error) {
+          toast({
+            title: "Error",
+            description: response.error || response.message,
+            variant: "destructive",
+            duration: 3000,
+          });
+          return;
+        }
+        toast({
+          title: "Expense deleted successfully",
+          duration: 3000,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.error || error.message,
+          variant: "destructive",
+          duration: 3000,
+        });
+      })
+      .finally(() => {
+        setBlockButtons(false);
+      });
+  };
 
   return (
     <div
@@ -53,6 +95,7 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
                   onClick={() => {
                     setDropdown(false);
                   }}
+                  disabled={blockButtons}
                 >
                   Edit
                 </button>
@@ -61,8 +104,15 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
                     "border border-white rounded p-4 bg-blue-950 hover:bg-black/50 transition duration-300"
                   }
                   onClick={() => {
+                    removeExpense(
+                      expense._id,
+                      expense.type,
+                      expense.account,
+                      expense.amount,
+                    );
                     setDropdown(false);
                   }}
+                  disabled={blockButtons}
                 >
                   Delete
                 </button>
@@ -74,6 +124,7 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
                   onClick={() => {
                     setDropdown(false);
                   }}
+                  disabled={blockButtons}
                 >
                   Close
                 </button>
