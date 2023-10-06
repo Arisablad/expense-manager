@@ -72,7 +72,7 @@ function CreateExpenseForm() {
       amount: 0,
       category: "",
       account: "",
-      type: undefined,
+      type: "expense",
     },
   });
 
@@ -99,7 +99,7 @@ function CreateExpenseForm() {
           amount: 0,
           category: "",
           account: "",
-          type: undefined,
+          type: "expense",
         });
         getAccounts();
       })
@@ -116,7 +116,7 @@ function CreateExpenseForm() {
   // name, amount, category, account, type
 
   return (
-    <div className=" h-screen w-full flex rounded-lg">
+    <div className=" h-full w-full flex rounded-lg">
       <div className="bg-primaryColor h-full w-full shadow-xl p-10 flex flex-col gap-4 text-sm rounded-lg items-center ">
         <Form {...expenseForm}>
           <form

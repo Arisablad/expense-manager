@@ -9,7 +9,7 @@ function TransactionHistory({ expenses }: TransactionHistoryProps) {
   return (
     <div
       className={
-        "hidden md:flex bg-blue-950 w-[600px] max-h-max flex-col gap-2 text-white overflow-y-auto rounded-lg"
+        "hidden xl:flex bg-blue-950 w-[600px] max-h-max flex-col gap-2 text-white overflow-y-auto rounded-lg"
       }
     >
       <div

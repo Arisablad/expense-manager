@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { UserIcon } from "@heroicons/react/20/solid";
 import logo from "@/assets/logo.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 const NAVIGATION_ITEMS = [
   {
@@ -29,6 +30,7 @@ const NAVIGATION_ITEMS = [
 
 export default function TopHeader() {
   const [expand, setExpand] = useState(false);
+  const user = useUserStore((state) => state.user);
   const expandMobileMenu = () => {
     setExpand(!expand);
   };
@@ -36,7 +38,7 @@ export default function TopHeader() {
   return (
     // MOBILE HEADER
     <>
-      {expand ? (
+      {!expand ? (
         <div className={"bg-secondaryColor w-full h-12 md:hidden p-4"}>
           <div
             className={
@@ -79,12 +81,12 @@ export default function TopHeader() {
       {/*  DESKTOP BAR */}
       <div
         className={
-          "hidden md:flex justify-between items-center bg-secondaryColor w-full h-12 p-4"
+          "hidden md:flex justify-between items-center bg-secondaryColor w-full h-18 p-4"
         }
       >
         <img
           src={logo}
-          className="h-[40px] w-auto"
+          className="h-[60px] w-auto"
           alt="Expense Manager Logo"
         />
         <div className={"flex items-center gap-4"}>
@@ -92,7 +94,7 @@ export default function TopHeader() {
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          Hi, Shad
+          <span className={"text-amber-100"}> Hi {user.name}</span>
         </div>
       </div>
     </>

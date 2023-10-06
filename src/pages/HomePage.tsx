@@ -1,14 +1,24 @@
 import MostlyLikedCategories from "@/components/MostlyLikedCategories.tsx";
 import TransactionHistory from "@/components/TransactionHistory.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ExpensesService from "@/services/ExpensesService.tsx";
 import { useToast } from "@/components/ui/use-toast.ts";
 import { Expense } from "@/types/Expenses.types.ts";
+import getMostlyLikedCategories from "@/utils/getMostlyLikedCategories.tsx";
+import { cn } from "@/lib/utils.ts";
+
+const OPTIONS = ["asc", "desc"];
 
 function HomePage() {
   const { getExpenses } = ExpensesService();
   const [expenses, setExpenses] = useState<Expense[] | []>([]);
+  const [active, setActive] = useState<string>("desc");
   const { toast } = useToast();
+  const mostLikedCategories = useMemo(() => {
+    return getMostlyLikedCategories(expenses, 3, active);
+  }, [expenses, active]);
+
+  console.log(mostLikedCategories);
 
   useEffect(() => {
     getExpenses()
@@ -36,9 +46,29 @@ function HomePage() {
 
   return (
     <div className={"h-full w-full bg-primaryColor rounded-lg"}>
-      <div className={"max-h-screen w-full flex p-4 gap-4"}>
-        <div className={"flex flex-col w-full gap-8"}>
-          <MostlyLikedCategories />
+      <div className={"max-h-full w-full flex p-4 gap-4"}>
+        <div className={"flex flex-col w-full gap-4"}>
+          <div className={"flex flex gap-2"}>
+            {OPTIONS.map((option) => {
+              return (
+                <button
+                  key={option}
+                  className={cn(
+                    "bg-secondaryColor w-full h-12 rounded-lg flex justify-center items-center text-white hover:bg-black/60 transition duration-300",
+                    {
+                      "bg-blue-600 hover:bg-blue-600": option === active,
+                    },
+                  )}
+                  onClick={() => {
+                    setActive(option);
+                  }}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+          <MostlyLikedCategories mostLikedCategories={mostLikedCategories} />
           <div className={"bg-blue-950 h-96 rounded-lg p-4"}>
             <h1 className={"text-3xl text-white"}>Here will be a graph</h1>
           </div>

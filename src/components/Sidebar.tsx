@@ -12,12 +12,12 @@ const NAVIGATION_ITEMS = [
     icon: HomeModernIcon,
   },
   {
-    title: "bills",
-    icon: CreditCardIcon,
-  },
-  {
     title: "expenses",
     icon: BanknotesIcon,
+  },
+  {
+    title: "bills",
+    icon: CreditCardIcon,
   },
   {
     title: "settings",
