@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast.ts";
 import BankService from "@/services/BankService.tsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ExpenseSchema } from "@/models/ExpensesModes.ts";
 
 import {
@@ -24,8 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Bank } from "@/types/Banks.types.ts";
 import ExpensesService from "@/services/ExpensesService.tsx";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 const CATEGORIES = [
   "entertainment",
@@ -44,25 +44,33 @@ const EXPENSE_TYPES = ["expense", "income"];
 function CreateExpenseForm() {
   const { getBankAccounts } = BankService();
   const { addExpenseToDb } = ExpensesService();
-  const [banks, setBanks] = useState<Bank[] | []>([]);
   const { toast } = useToast();
+  const setGlobalAccounts = useUserStore((state) => state.setGlobalAccounts);
+  const globalAccounts = useUserStore((state) => state.globalAccounts);
+  const globalExpenses = useUserStore((state) => state.globalExpenses);
+  const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
 
   const getAccounts = () => {
-    return getBankAccounts()
-      .then((data) => {
-        if (data.error) {
-          return Promise.reject(data.error);
-        }
-        setBanks(data.bankAccounts);
-        return Promise.resolve(data);
-      })
-      .catch((err) => {
-        return Promise.reject(err.response.data);
-      });
+    if (globalAccounts.length === 0) {
+      return getBankAccounts()
+        .then((data) => {
+          if (data.error) {
+            return Promise.reject(data.error);
+          }
+          // setBanks(data.bankAccounts);
+          setGlobalAccounts(data.bankAccounts);
+          return Promise.resolve(data);
+        })
+        .catch((err) => {
+          return Promise.reject(err.response.data);
+        });
+    }
   };
 
   useEffect(() => {
-    getAccounts();
+    if (globalAccounts.length === 0) {
+      getAccounts();
+    }
   }, []);
 
   const expenseForm = useForm<z.infer<typeof ExpenseSchema>>({
@@ -101,7 +109,25 @@ function CreateExpenseForm() {
           account: "",
           type: "expense",
         });
-        getAccounts();
+
+        //Change balance of account according to type
+        if (data.type === "expense") {
+          const chargingAccount = globalAccounts.find(
+            (account) => account._id === data.account,
+          );
+          if (chargingAccount) {
+            chargingAccount.balance -= data.amount;
+          }
+        } else {
+          const chargingAccount = globalAccounts.find(
+            (account) => account._id === data.account,
+          );
+          if (chargingAccount) {
+            chargingAccount.balance += data.amount;
+          }
+        }
+        setGlobalExpenses([...globalExpenses, response]);
+        // getAccounts();
       })
       .catch((error) => {
         toast({
@@ -230,7 +256,7 @@ function CreateExpenseForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {banks.map((bank) => (
+                      {globalAccounts?.map((bank) => (
                         <SelectItem value={bank._id} key={bank._id}>
                           {`${bank.name} - ${bank.balance} zł`}
                         </SelectItem>

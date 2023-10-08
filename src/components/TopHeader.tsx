@@ -8,31 +8,67 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import logo from "@/assets/logo.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserStore } from "@/providers/ZusStore.tsx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const NAVIGATION_ITEMS = [
-  {
-    title: "Home",
-    icon: "some",
-  },
-  {
-    title: "Explore",
-    icon: "some",
-  },
-  {
-    title: "Bell",
-    icon: "some",
-  },
-  {
-    title: "Messages",
-    icon: "some",
-  },
-];
+import { useToast } from "@/components/ui/use-toast.ts";
+import AuthService from "@/services/AuthService.tsx";
+
+// const NAVIGATION_ITEMS = [
+//   {
+//     title: "Home",
+//     icon: "some",
+//   },
+//   {
+//     title: "Explore",
+//     icon: "some",
+//   },
+//   {
+//     title: "Bell",
+//     icon: "some",
+//   },
+//   {
+//     title: "Messages",
+//     icon: "some",
+//   },
+// ];
 
 export default function TopHeader() {
   const [expand, setExpand] = useState(false);
   const user = useUserStore((state) => state.user);
+  const [dropdownMenu, setDropdownMenu] = useState(false);
+  const [position, setPosition] = useState("bottom");
+  const { toast } = useToast();
+  const { signOutUser } = useUserStore((state) => state);
+  const { signOut } = AuthService();
   const expandMobileMenu = () => {
     setExpand(!expand);
+  };
+
+  const logout = () => {
+    signOut()
+      .then(() => {
+        toast({
+          title: "Logged out successfully",
+          duration: 3000,
+        });
+      })
+      .catch((err) => {
+        toast({
+          title: "Error",
+          description: err.message,
+          duration: 3000,
+          variant: "destructive",
+        });
+      });
+    signOutUser();
   };
 
   return (
@@ -90,10 +126,38 @@ export default function TopHeader() {
           alt="Expense Manager Logo"
         />
         <div className={"flex items-center gap-4"}>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  onClick={() => {
+                    setDropdownMenu(!dropdownMenu);
+                  }}
+                  className={"cursor-pointer"}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Additional options</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={position}
+                onValueChange={setPosition}
+              >
+                <DropdownMenuRadioItem
+                  value="top"
+                  className={"cursor-pointer"}
+                  onClick={() => {
+                    logout();
+                  }}
+                >
+                  Sign Out
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <span className={"text-amber-100"}> Hi {user.name}</span>
         </div>
       </div>

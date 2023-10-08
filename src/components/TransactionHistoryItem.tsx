@@ -4,12 +4,16 @@ import { Expense } from "@/types/Expenses.types.ts";
 import { useState } from "react";
 import ExpensesService from "@/services/ExpensesService.tsx";
 import { useToast } from "@/components/ui/use-toast.ts";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 function TransactionHistoryItem({ expense }: { expense: Expense }) {
   const [dropdown, setDropdown] = useState(false);
   const { removeExpenseFromDb } = ExpensesService();
   const [blockButtons, setBlockButtons] = useState(false);
   const { toast } = useToast();
+  const globalExpenses = useUserStore((state) => state.globalExpenses);
+  const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
+  const globalAccounts = useUserStore((state) => state.globalAccounts);
 
   const removeExpense = (
     id: string,
@@ -29,6 +33,22 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
             duration: 3000,
           });
           return;
+        }
+        setGlobalExpenses(globalExpenses.filter((e) => e._id !== id));
+        if (type === "expense") {
+          const chargingAccount = globalAccounts.find(
+            (currentAccount) => currentAccount._id === account,
+          );
+          if (chargingAccount) {
+            chargingAccount.balance += amount;
+          }
+        } else {
+          const chargingAccount = globalAccounts.find(
+            (currentAccount) => currentAccount._id === account,
+          );
+          if (chargingAccount) {
+            chargingAccount.balance -= amount;
+          }
         }
         toast({
           title: "Expense deleted successfully",

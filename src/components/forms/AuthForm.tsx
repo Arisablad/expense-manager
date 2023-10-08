@@ -166,9 +166,17 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
                   <label htmlFor="remeberMe">Remeber me</label>
                 </div>
                 <div className="w-1/2">
-                  <a className="font-bold text-blue-600" href="">
+                  <span
+                    className="font-bold text-blue-600 cursor-pointer"
+                    onClick={() => {
+                      toast({
+                        variant: "destructive",
+                        description: `Function Will be implemented soon`,
+                      });
+                    }}
+                  >
                     Forgot password ?
-                  </a>
+                  </span>
                 </div>
               </div>
 
@@ -357,7 +365,7 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
               </div>
               <p className="text-sm text-gray-500 mt-10">
                 Already have account?{" "}
-                <Link to="/signup" className="text-[#4F46E5] font-bold">
+                <Link to="/signin" className="text-[#4F46E5] font-bold">
                   Login Here
                 </Link>
               </p>

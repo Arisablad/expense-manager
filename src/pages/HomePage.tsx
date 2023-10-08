@@ -3,47 +3,49 @@ import TransactionHistory from "@/components/TransactionHistory.tsx";
 import { useEffect, useMemo, useState } from "react";
 import ExpensesService from "@/services/ExpensesService.tsx";
 import { useToast } from "@/components/ui/use-toast.ts";
-import { Expense } from "@/types/Expenses.types.ts";
 import getMostlyLikedCategories from "@/utils/getMostlyLikedCategories.tsx";
 import { cn } from "@/lib/utils.ts";
 import ChartGenerator from "@/components/ChartGenerator.tsx";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 const OPTIONS = ["asc", "desc"];
 
 function HomePage() {
   const { getExpenses } = ExpensesService();
-  const [expenses, setExpenses] = useState<Expense[] | []>([]);
   const [active, setActive] = useState<string>("desc");
+  const globalExpenses = useUserStore((state) => state.globalExpenses);
+  const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
   const { toast } = useToast();
+  // @ts-ignore
   const mostLikedCategories: [string, { count: number; total: number }][] =
     useMemo(() => {
-      return getMostlyLikedCategories(expenses, 3, active);
-    }, [expenses, active]);
-
-  console.log(mostLikedCategories);
+      return getMostlyLikedCategories(globalExpenses, 3, active);
+    }, [globalExpenses, active]);
 
   useEffect(() => {
-    getExpenses()
-      .then((res) => {
-        if (res.error) {
+    if (globalExpenses.length === 0) {
+      getExpenses()
+        .then((res) => {
+          if (res.error) {
+            toast({
+              title: `Error`,
+              description: `${res.error}`,
+              variant: "destructive",
+              duration: 3000,
+            });
+            return;
+          }
+          setGlobalExpenses(res);
+        })
+        .catch((error) => {
           toast({
             title: `Error`,
-            description: `${res.error}`,
+            description: `${error.error || error.message}`,
             variant: "destructive",
             duration: 3000,
           });
-          return;
-        }
-        setExpenses(res);
-      })
-      .catch((error) => {
-        toast({
-          title: `Error`,
-          description: `${error.error || error.message}`,
-          variant: "destructive",
-          duration: 3000,
         });
-      });
+    }
   }, []);
 
   return (
@@ -76,18 +78,27 @@ function HomePage() {
               "bg-blue-950 h-96 rounded-lg p-4 flex items-center justify-center w-full overflow-x-auto"
             }
           >
-            <ChartGenerator
-              xAxisData={expenses.map((expense) => expense.category)}
-              yAxisData={expenses.map((expense) => {
-                if (expense.type === "expense") {
-                  return -expense.amount;
-                }
-                return expense.amount;
-              })}
-            />
+            {globalExpenses?.length > 0 ? (
+              <ChartGenerator
+                xAxisData={globalExpenses.map((expense) => expense.category)}
+                yAxisData={globalExpenses.map((expense) => {
+                  if (expense.type === "expense") {
+                    return -expense.amount;
+                  }
+                  return expense.amount;
+                })}
+              />
+            ) : (
+              <div className={"text-center text-white"}>
+                No transactions yet
+              </div>
+            )}
           </div>
         </div>
-        <TransactionHistory expenses={expenses} getExpenses={getExpenses} />
+        <TransactionHistory
+          expenses={globalExpenses}
+          getExpenses={getExpenses}
+        />
       </div>
     </div>
   );
