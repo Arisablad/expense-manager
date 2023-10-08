@@ -120,11 +120,13 @@ export default function TopHeader() {
           "hidden md:flex justify-between items-center bg-secondaryColor w-full h-18 p-4"
         }
       >
-        <img
-          src={logo}
-          className="h-[60px] w-auto"
-          alt="Expense Manager Logo"
-        />
+        <Link to={"/home"}>
+          <img
+            src={logo}
+            className="h-[60px] w-auto hover:scale-[130%] duration-300"
+            alt="Expense Manager Logo"
+          />
+        </Link>
         <div className={"flex items-center gap-4"}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

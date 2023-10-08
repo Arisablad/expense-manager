@@ -14,9 +14,7 @@ function MostlyLikedCategories({
   }, [mostLikedCategories]);
   return (
     <div className={"w-full flex-col"}>
-      <div
-        className={`grid grid-cols-1 h-96 md:grid-cols-${columns} gap-4 md:h-40 `}
-      >
+      <div className={`grid grid-cols-1 h-96 md:grid-cols-3 gap-4 md:h-40 `}>
         {mostLikedCategories.map(([categoryName, info]) => (
           <div
             key={categoryName}
