@@ -7,6 +7,8 @@ import getMostlyLikedCategories from "@/utils/getMostlyLikedCategories.tsx";
 import { cn } from "@/lib/utils.ts";
 import ChartGenerator from "@/components/ChartGenerator.tsx";
 import { useUserStore } from "@/providers/ZusStore.tsx";
+import BankService from "@/services/BankService.tsx";
+import CreateBankAccountForm from "@/components/forms/CreateBankAccountForm.tsx";
 
 const OPTIONS = ["asc", "desc"];
 
@@ -16,11 +18,29 @@ function HomePage() {
   const globalExpenses = useUserStore((state) => state.globalExpenses);
   const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
   const { toast } = useToast();
+  const { getBankAccounts } = BankService();
   // @ts-ignore
   const mostLikedCategories: [string, { count: number; total: number }][] =
     useMemo(() => {
       return getMostlyLikedCategories(globalExpenses, 3, active);
     }, [globalExpenses, active]);
+  const setGlobalAccounts = useUserStore((state) => state.setGlobalAccounts);
+  const globalAccounts = useUserStore((state) => state.globalAccounts);
+
+  const getAccounts = () => {
+    return getBankAccounts()
+      .then((data) => {
+        if (data.error) {
+          return Promise.reject(data.error);
+        }
+        // setBanks(data.bankAccounts);
+        setGlobalAccounts(data.bankAccounts);
+        return Promise.resolve(data);
+      })
+      .catch((err) => {
+        return Promise.reject(err.response.data);
+      });
+  };
 
   useEffect(() => {
     if (globalExpenses.length === 0) {
@@ -47,6 +67,16 @@ function HomePage() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (globalAccounts.length === 0) {
+      void getAccounts();
+    }
+  }, []);
+
+  if (globalExpenses.length === 0) {
+    return <CreateBankAccountForm />;
+  }
 
   return (
     <div className={"h-full w-full bg-primaryColor rounded-lg"}>

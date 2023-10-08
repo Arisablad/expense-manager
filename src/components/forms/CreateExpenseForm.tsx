@@ -69,7 +69,7 @@ function CreateExpenseForm() {
 
   useEffect(() => {
     if (globalAccounts.length === 0) {
-      getAccounts();
+      void getAccounts();
     }
   }, []);
 

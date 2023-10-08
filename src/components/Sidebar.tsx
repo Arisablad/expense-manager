@@ -5,6 +5,7 @@ import {
   HomeModernIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 const NAVIGATION_ITEMS = [
   {
@@ -26,6 +27,10 @@ const NAVIGATION_ITEMS = [
 ];
 
 function Sidebar() {
+  const globalAccounts = useUserStore((state) => state.globalAccounts);
+  if (globalAccounts.length === 0) {
+    return null;
+  }
   return (
     <div
       className={
