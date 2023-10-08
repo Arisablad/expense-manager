@@ -130,13 +130,14 @@ export default function TopHeader() {
         <div className={"flex items-center gap-4"}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar>
+              <Avatar
+                className={"cursor-pointer hover:scale-[130%] duration-300"}
+              >
                 <AvatarImage
                   src="https://github.com/shadcn.png"
                   onClick={() => {
                     setDropdownMenu(!dropdownMenu);
                   }}
-                  className={"cursor-pointer"}
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

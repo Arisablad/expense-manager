@@ -14,6 +14,20 @@ export const ExpenseSchema = z.object({
   account: z.string().min(3, {
     message: "Account must be at least 4 characters.",
   }),
+  owner: z
+    .string()
+    .min(3, {
+      message: "Owner Account must be at least 4 characters.",
+    })
+    .optional(),
+  _id: z
+    .string()
+    .min(3, {
+      message: "Owner Id must be at least 4 characters.",
+    })
+    .optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 // _id: string;

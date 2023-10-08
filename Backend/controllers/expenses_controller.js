@@ -146,3 +146,47 @@ export const getSingleExpense = async (req, res) => {
     console.log(`Error in getSingleExpense: ${error.message}`);
   }
 };
+
+// export const updateExpense = async (req, res) => {
+//   try {
+//     const expense = await Expense.findById(req.params.id);
+//     const user = await User.findById(req.user._id);
+//     if (!user) {
+//       return res.status(404).json({error: "User not found"});
+//     }
+//     if (user._id.toString() !== req.user.id.toString()) {
+//       return res.status(403).json({error: "You're not authorized"});
+//     }
+//     if (!expense) {
+//       return res.status(404).json({error: "Expense not found"});
+//     }
+//
+//     // ADD OR SUBTRACT BALANCE FROM BANK ACCOUNT BASED ON EXPENSE VALUE AND TYPE
+//     const bankAccount = await BankAccount.findById(updatedExpense.account);
+//     if (!bankAccount) {
+//       return res.status(404).json({ message: "Bank account not found" });
+//     }
+//     if (bankAccount.owner.toString() !== req.user.id.toString()) {
+//       return res.status(403).json({ message: "You're not authorized" });
+//     }
+//     const updatedExpense = await Expense.findByIdAndUpdate(req.params.id, req.body, {new: true});
+//
+//     if (!updatedExpense) {
+//       return res.status(404).json({error: "Expense not found"});
+//     }
+//
+//
+//     if (updatedExpense.type === "expense") {
+//       bankAccount.balance = updatedExpense.amount - expense.amount;
+//       await bankAccount.save();
+//     } else {
+//       bankAccount.balance = updatedExpense.amount - expense.amount;
+//       await bankAccount.save();
+//     }
+//
+//
+//
+//
+//     res.status(200).json(updatedExpense);
+//   }
+// }
