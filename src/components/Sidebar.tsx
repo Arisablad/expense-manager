@@ -1,9 +1,4 @@
-import {
-  BanknotesIcon,
-  Cog8ToothIcon,
-  CreditCardIcon,
-  HomeModernIcon,
-} from "@heroicons/react/24/solid";
+import { BanknotesIcon, HomeModernIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/providers/ZusStore.tsx";
 
@@ -16,19 +11,15 @@ const NAVIGATION_ITEMS = [
     title: "expenses",
     icon: BanknotesIcon,
   },
-  {
-    title: "bills",
-    icon: CreditCardIcon,
-  },
-  {
-    title: "settings",
-    icon: Cog8ToothIcon,
-  },
+  // {
+  //   title: "settings",
+  //   icon: Cog8ToothIcon,
+  // },
 ];
 
 function Sidebar() {
-  const globalAccounts = useUserStore((state) => state.globalAccounts);
-  if (globalAccounts.length === 0) {
+  const user = useUserStore((state) => state.user);
+  if (user.bankAccounts.length === 0) {
     return null;
   }
   return (
@@ -49,7 +40,7 @@ function Sidebar() {
             <div>
               <item.icon className={"h-6 w-6 text-white"} />
             </div>
-            <div>{item.title}</div>
+            <div>{`${item.title[0].toUpperCase()}${item.title.slice(1)}`}</div>
           </Link>
         ))}
       </div>

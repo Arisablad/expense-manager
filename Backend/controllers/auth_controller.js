@@ -41,7 +41,13 @@ export const signup = async (req, res) => {
       await generateTokenAndSetCookies(newUser._id, res);
       res.status(201).json({
         message: "User created successfully",
-        user: { name, username, email, _id: newUser._id },
+        user: {
+          name,
+          username,
+          email,
+          _id: newUser._id,
+          bankAccounts: newUser.bankAccounts,
+        },
       });
     } else {
       res.status(500).json({ error: "Invalid user data" });
@@ -74,6 +80,7 @@ export const signin = async (req, res) => {
         username: user.username,
         email: user.email,
         _id: user._id,
+        bankAccounts: user.bankAccounts,
       },
     });
   } catch (error) {

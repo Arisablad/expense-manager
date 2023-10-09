@@ -12,7 +12,7 @@ export const createBankAccount = async (req, res) => {
     if (user._id.toString() !== req.user.id.toString()) {
       return res.status(403).json({ message: "You're not authorized" });
     }
-    if (!name || !balance) {
+    if (!name) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const newBankAccount = await BankAccount.create({
@@ -26,9 +26,11 @@ export const createBankAccount = async (req, res) => {
       $push: { bankAccounts: newBankAccount._id },
     });
 
-    res
-      .status(201)
-      .json({ message: "Bank account created successfully", newBankAccount });
+    res.status(201).json({
+      message: "Bank account created successfully",
+      bankAccounts: newBankAccount,
+      bankAccountsId: newBankAccount._id,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
     console.log(`Error in createBankAccount: ${error.message}`);

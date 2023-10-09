@@ -33,6 +33,8 @@ import { z } from "zod";
 import { ExpenseSchema } from "@/models/ExpensesModes.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "@/providers/ZusStore.tsx";
+import { useToast } from "@/components/ui/use-toast.ts";
+import ExpensesService from "@/services/ExpensesService.tsx";
 
 type EditExpenseModalProps = {
   setDropdown: React.Dispatch<React.SetStateAction<boolean>>;
@@ -76,45 +78,75 @@ function EditExpenseModal({
   const globalAccounts = useUserStore((state) => state.globalAccounts);
   const globalExpenses = useUserStore((state) => state.globalExpenses);
   const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
+  const { updateSingleExpense } = ExpensesService();
+  const { toast } = useToast();
 
   const updateExpense = (data: z.infer<typeof ExpenseSchema>) => {
-    setDropdown(false);
-    if (data.type === "expense") {
-      const chargingAccount = globalAccounts.find(
-        (account) => account._id === data.account,
-      );
-      if (chargingAccount) {
-        const editedExpenses = [
-          ...globalExpenses.map((element) => {
-            if (element._id === expense._id) {
-              return data;
-            } else {
-              return element;
-            }
-          }),
-        ];
-        setGlobalExpenses(editedExpenses);
-        chargingAccount.balance -= data.amount - expense.amount;
-        // difference between current expense and new expense added to new expense account balance
-      }
-    } else {
-      const chargingAccount = globalAccounts.find(
-        (account) => account._id === data.account,
-      );
-      if (chargingAccount) {
-        const editedExpenses = [
-          ...globalExpenses.map((element) => {
-            if (element._id === expense._id) {
-              return data;
-            } else {
-              return element;
-            }
-          }),
-        ];
-        setGlobalExpenses(editedExpenses);
-        chargingAccount.balance += data.amount - expense.amount;
-      }
-    }
+    updateSingleExpense(
+      expense._id,
+      data.name,
+      data.type,
+      data.account,
+      data.amount,
+      data.category,
+    )
+      .then((res) => {
+        if (res.error) {
+          toast({
+            title: `Error`,
+            description: `${res.error}`,
+            variant: "destructive",
+            duration: 3000,
+          });
+          return;
+        }
+        setDropdown(false);
+        if (data.type === "expense") {
+          const chargingAccount = globalAccounts.find(
+            (account) => account._id === data.account,
+          );
+          if (chargingAccount) {
+            const editedExpenses = [
+              ...globalExpenses.map((element) => {
+                if (element._id === expense._id) {
+                  return data;
+                } else {
+                  return element;
+                }
+              }),
+            ];
+            setGlobalExpenses(editedExpenses);
+            chargingAccount.balance -= data.amount - expense.amount;
+            // difference between current expense and new expense added to new expense account balance
+          }
+        } else {
+          const chargingAccount = globalAccounts.find(
+            (account) => account._id === data.account,
+          );
+          if (chargingAccount) {
+            const editedExpenses = [
+              ...globalExpenses.map((element) => {
+                if (element._id === expense._id) {
+                  return data;
+                } else {
+                  return element;
+                }
+              }),
+            ];
+            setGlobalExpenses(editedExpenses);
+            chargingAccount.balance += data.amount - expense.amount;
+          }
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: `Error`,
+          description: `${error.error || error.message}`,
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      });
   };
 
   return (

@@ -147,46 +147,68 @@ export const getSingleExpense = async (req, res) => {
   }
 };
 
-// export const updateExpense = async (req, res) => {
-//   try {
-//     const expense = await Expense.findById(req.params.id);
-//     const user = await User.findById(req.user._id);
-//     if (!user) {
-//       return res.status(404).json({error: "User not found"});
-//     }
-//     if (user._id.toString() !== req.user.id.toString()) {
-//       return res.status(403).json({error: "You're not authorized"});
-//     }
-//     if (!expense) {
-//       return res.status(404).json({error: "Expense not found"});
-//     }
-//
-//     // ADD OR SUBTRACT BALANCE FROM BANK ACCOUNT BASED ON EXPENSE VALUE AND TYPE
-//     const bankAccount = await BankAccount.findById(updatedExpense.account);
-//     if (!bankAccount) {
-//       return res.status(404).json({ message: "Bank account not found" });
-//     }
-//     if (bankAccount.owner.toString() !== req.user.id.toString()) {
-//       return res.status(403).json({ message: "You're not authorized" });
-//     }
-//     const updatedExpense = await Expense.findByIdAndUpdate(req.params.id, req.body, {new: true});
-//
-//     if (!updatedExpense) {
-//       return res.status(404).json({error: "Expense not found"});
-//     }
-//
-//
-//     if (updatedExpense.type === "expense") {
-//       bankAccount.balance = updatedExpense.amount - expense.amount;
-//       await bankAccount.save();
-//     } else {
-//       bankAccount.balance = updatedExpense.amount - expense.amount;
-//       await bankAccount.save();
-//     }
-//
-//
-//
-//
-//     res.status(200).json(updatedExpense);
-//   }
-// }
+export const updateExpense = async (req, res) => {
+  const { name, amount, category, account, type } = req.body;
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json({ message: "You need to choose expense to update" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (user._id.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ error: "You're not authorized" });
+    }
+
+    const expense = await Expense.findById(req.params.id);
+    if (!expense) {
+      return res.status(404).json({ error: "Expense not found" });
+    }
+
+    if (!expense) {
+      return res.status(404).json({ error: "Expense not found" });
+    }
+    if (expense.owner.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ error: "You're not authorized" });
+    }
+    const updatedExpense = await Expense.findOneAndUpdate(
+      { _id: req.params.id },
+      { name, amount, category, type },
+      { new: true },
+    );
+
+    // ADD OR SUBTRACT BALANCE FROM BANK ACCOUNT BASED ON EXPENSE VALUE AND TYPE
+    const bankAccount = await BankAccount.findById(account);
+    if (!bankAccount) {
+      return res.status(404).json({ message: "Bank account not found" });
+    }
+    if (bankAccount.owner.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ message: "You're not authorized" });
+    }
+
+    const previousExpense = await Expense.findById(req.params.id);
+
+    if (!previousExpense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    if (previousExpense.type === "expense") {
+      bankAccount.balance -= previousExpense.amount - expense.amount;
+      await bankAccount.save();
+    } else {
+      bankAccount.balance += previousExpense.amount - expense.amount;
+      await bankAccount.save();
+    }
+
+    res
+      .status(200)
+      .json({ message: "Expense updated successfully", updatedExpense });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+    console.log(`Error in updateExpense: ${error.message}`);
+  }
+};

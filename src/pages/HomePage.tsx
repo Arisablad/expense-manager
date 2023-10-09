@@ -9,6 +9,8 @@ import ChartGenerator from "@/components/ChartGenerator.tsx";
 import { useUserStore } from "@/providers/ZusStore.tsx";
 import BankService from "@/services/BankService.tsx";
 import CreateBankAccountForm from "@/components/forms/CreateBankAccountForm.tsx";
+import { PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const OPTIONS = ["asc", "desc"];
 
@@ -18,6 +20,7 @@ function HomePage() {
   const globalExpenses = useUserStore((state) => state.globalExpenses);
   const setGlobalExpenses = useUserStore((state) => state.setGlobalExpenses);
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { getBankAccounts } = BankService();
   // @ts-ignore
   const mostLikedCategories: [string, { count: number; total: number }][] =
@@ -26,7 +29,7 @@ function HomePage() {
     }, [globalExpenses, active]);
   const setGlobalAccounts = useUserStore((state) => state.setGlobalAccounts);
   const globalAccounts = useUserStore((state) => state.globalAccounts);
-
+  const user = useUserStore((state) => state.user);
   const getAccounts = () => {
     return getBankAccounts()
       .then((data) => {
@@ -69,12 +72,12 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (globalAccounts.length === 0) {
+    if (globalAccounts.length === 0 && user.bankAccounts.length > 0) {
       void getAccounts();
     }
   }, []);
 
-  if (globalExpenses.length === 0) {
+  if (user.bankAccounts.length === 0) {
     return <CreateBankAccountForm />;
   }
 
@@ -83,26 +86,31 @@ function HomePage() {
       <div className={"max-h-full w-full flex p-4 gap-4"}>
         <div className={"flex flex-col w-full gap-4"}>
           <div className={"flex flex gap-2"}>
-            {OPTIONS.map((option) => {
-              return (
-                <button
-                  key={option}
-                  className={cn(
-                    "bg-secondaryColor w-full h-12 rounded-lg flex justify-center items-center text-white hover:bg-black/60 transition duration-300",
-                    {
-                      "bg-blue-600 hover:bg-blue-600": option === active,
-                    },
-                  )}
-                  onClick={() => {
-                    setActive(option);
-                  }}
-                >
-                  {option}
-                </button>
-              );
-            })}
+            {mostLikedCategories.length > 0 &&
+              OPTIONS.map((option) => {
+                return (
+                  <button
+                    key={option}
+                    className={cn(
+                      "bg-secondaryColor w-full h-12 rounded-lg flex justify-center items-center text-white hover:bg-black/60 transition duration-300",
+                      {
+                        "bg-blue-600 hover:bg-blue-600": option === active,
+                      },
+                    )}
+                    onClick={() => {
+                      setActive(option);
+                    }}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
           </div>
-          <MostlyLikedCategories mostLikedCategories={mostLikedCategories} />
+          {mostLikedCategories.length > 0 ? (
+            <MostlyLikedCategories mostLikedCategories={mostLikedCategories} />
+          ) : (
+            <></>
+          )}
           <div
             className={
               "bg-blue-950 h-96 rounded-lg p-4 flex items-center justify-center w-full overflow-x-auto"
@@ -119,8 +127,20 @@ function HomePage() {
                 })}
               />
             ) : (
-              <div className={"text-center text-white"}>
-                No transactions yet
+              <div
+                className={
+                  "flex justify-center items-center flex-col text-white gap-4"
+                }
+              >
+                <p>No transactions yet</p>
+                <PlusCircle
+                  className={
+                    "cursor-pointer w-16 h-16 text-green-500 hover:text-green-600/70 transition duration-300 transition"
+                  }
+                  onClick={() => {
+                    navigate("/expenses");
+                  }}
+                />
               </div>
             )}
           </div>

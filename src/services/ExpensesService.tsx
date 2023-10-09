@@ -53,7 +53,39 @@ function ExpensesService() {
       });
   };
 
-  return { getExpenses, addExpenseToDb, removeExpenseFromDb };
+  const updateSingleExpense = (
+    id: string,
+    name: string,
+    type: string,
+    account: string,
+    amount: number,
+    category: string,
+  ) => {
+    return apiClient
+      .put(`/expenses/${id}`, {
+        type,
+        name,
+        account,
+        amount,
+        category,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          return Promise.resolve(res.data);
+        }
+        return Promise.reject(res.data);
+      })
+      .catch((err) => {
+        return Promise.reject(err.response.data);
+      });
+  };
+
+  return {
+    getExpenses,
+    addExpenseToDb,
+    removeExpenseFromDb,
+    updateSingleExpense,
+  };
 }
 
 export default ExpensesService;

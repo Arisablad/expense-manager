@@ -7,10 +7,11 @@ type User = {
   username: string;
   email: string;
   password: string;
+  bankAccounts: string[];
 };
 
 type State = {
-  user: User | Record<string, never>;
+  user: User;
   globalMostlyLikedCategories: [string, { count: number; total: number }][];
   globalExpenses: Expense[] | [];
   globalAccounts: Bank[] | [];
@@ -29,7 +30,7 @@ type Actions = {
 
   // BANK ACCOUNTS
   setGlobalAccounts: (data: Bank[]) => void;
-  addGlobalAccounts: (data: Bank[]) => void;
+  addGlobalAccounts: (data: Bank) => void;
 };
 
 export const useUserStore = create<State & Actions>((set) => ({
@@ -55,7 +56,7 @@ export const useUserStore = create<State & Actions>((set) => ({
   setGlobalAccounts: (data: Bank[]) => {
     set(() => ({ globalAccounts: data }));
   },
-  addGlobalAccounts: (data: Bank[]) => {
+  addGlobalAccounts: (data: Bank) => {
     set((state) => ({
       globalAccounts: [...state.globalAccounts, ...data],
     }));

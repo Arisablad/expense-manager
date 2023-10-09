@@ -256,11 +256,12 @@ function CreateExpenseForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {globalAccounts?.map((bank) => (
-                        <SelectItem value={bank._id} key={bank._id}>
-                          {`${bank.name} - ${bank.balance} zł`}
-                        </SelectItem>
-                      ))}
+                      {globalAccounts?.length > 0 &&
+                        globalAccounts.map((bank) => (
+                          <SelectItem value={bank._id} key={bank._id}>
+                            {`${bank.name} - ${bank.balance} zł`}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormDescription>
