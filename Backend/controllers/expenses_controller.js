@@ -52,10 +52,10 @@ export const createExpense = async (req, res) => {
     // await user.updateOne({ $push: { expenses: expense._id } });
     await bankAccount.updateOne({ $push: { expenses: expense._id } });
 
-    res.status(200).json(expense);
+    return res.status(200).json(expense);
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(`Error in createExpense: ${error.message}`);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -102,9 +102,9 @@ export const deleteExpense = async (req, res) => {
 
     // Delete expense from database
     await Expense.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Expense deleted successfully" });
+    return res.status(200).json({ message: "Expense deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
     console.log(`Error in deleteExpense: ${error.message}`);
   }
 };
@@ -120,10 +120,10 @@ export const getExpenses = async (req, res) => {
     }
     const expenses = await Expense.find({ owner: req.user._id });
     console.log(expenses);
-    res.status(200).json(expenses);
+    return res.status(200).json(expenses);
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in getExpenses: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -140,10 +140,10 @@ export const getSingleExpense = async (req, res) => {
     if (!expense) {
       return res.status(404).json({ error: "Expense not found" });
     }
-    res.status(200).json(expense);
+    return res.status(200).json(expense);
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in getSingleExpense: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -204,11 +204,11 @@ export const updateExpense = async (req, res) => {
       await bankAccount.save();
     }
 
-    res
+    return res
       .status(200)
       .json({ message: "Expense updated successfully", updatedExpense });
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in updateExpense: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };

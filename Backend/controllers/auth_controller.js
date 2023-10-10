@@ -39,7 +39,7 @@ export const signup = async (req, res) => {
     });
     if (newUser) {
       await generateTokenAndSetCookies(newUser._id, res);
-      res.status(201).json({
+      return res.status(201).json({
         message: "User created successfully",
         user: {
           name,
@@ -50,11 +50,11 @@ export const signup = async (req, res) => {
         },
       });
     } else {
-      res.status(500).json({ error: "Invalid user data" });
+      return res.status(500).json({ error: "Invalid user data" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in signUp: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -73,7 +73,7 @@ export const signin = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
     generateTokenAndSetCookies(user._id, res);
-    res.status(200).json({
+    return res.status(200).json({
       message: "Logged in successfully",
       user: {
         name: user.name,
@@ -84,17 +84,17 @@ export const signin = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in signIn: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 export const signout = async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 1 });
-    res.status(200).json({ message: "User signed out" });
+    return res.status(200).json({ message: "User signed out" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(`Error in signout: ${error.message}`);
+    return res.status(500).json({ message: error.message });
   }
 };

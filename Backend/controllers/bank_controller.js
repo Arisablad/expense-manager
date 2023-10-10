@@ -26,14 +26,14 @@ export const createBankAccount = async (req, res) => {
       $push: { bankAccounts: newBankAccount._id },
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Bank account created successfully",
       bankAccounts: newBankAccount,
       bankAccountsId: newBankAccount._id,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(`Error in createBankAccount: ${error.message}`);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -60,10 +60,12 @@ export const deleteBankAccount = async (req, res) => {
       $pull: { bankAccounts: req.params.id },
     });
 
-    res.status(200).json({ message: "Bank account deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Bank account deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(`Error in deleteBankAccount: ${error.message}`);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -77,10 +79,10 @@ export const getBankAccounts = async (req, res) => {
       return res.status(403).json({ message: "You're not authorized" });
     }
     const bankAccounts = await BankAccount.find({ owner: req.user._id });
-    res.status(200).json({ bankAccounts });
+    return res.status(200).json({ bankAccounts });
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(`Error in getBankAccounts: ${error.message}`);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -108,9 +110,9 @@ export const updateBankAccount = async (req, res) => {
       .populate("owner")
       .populate("expenses");
 
-    res.status(200).json({ updatedBankAccount });
+    return res.status(200).json({ updatedBankAccount });
   } catch (error) {
-    res.status(500).json({ error: error.message });
     console.log(`Error in updateBankAccount: ${error.message}`);
+    return res.status(500).json({ error: error.message });
   }
 };
