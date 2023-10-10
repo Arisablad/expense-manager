@@ -35,6 +35,10 @@ app.listen(PORT, async () => {
   await connectDB();
 });
 
+app.get("/", (req, res) => {
+  res.send("Welcome to Expense Manager");
+});
+
 // ROUTES
 app.use("/api/user", userRoutes);
 app.use("/api/bank", bankAccountRoutes);
