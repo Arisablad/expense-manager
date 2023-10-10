@@ -21,6 +21,7 @@ const origin =
 // GLOBAL MIDDLEWARES
 app.use(
   cors({
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     origin,
   }),
