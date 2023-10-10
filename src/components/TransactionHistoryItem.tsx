@@ -6,6 +6,7 @@ import ExpensesService from "@/services/ExpensesService.tsx";
 import { useToast } from "@/components/ui/use-toast.ts";
 import { useUserStore } from "@/providers/ZusStore.tsx";
 import EditExpenseModal from "@/components/modals/EditExpenseModal.tsx";
+import * as dayjs from "dayjs";
 
 function TransactionHistoryItem({ expense }: { expense: Expense }) {
   const [dropdown, setDropdown] = useState(false);
@@ -79,7 +80,7 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
         <CalendarDaysIcon className={"h-6 w-6"} />
         <div>
           <p>{expense.name}</p>
-          <p>{expense.createdAt}</p>
+          <p>{dayjs(expense.createdAt).format("DD.MM.YYYY")}</p>
         </div>
       </div>
 
@@ -110,7 +111,6 @@ function TransactionHistoryItem({ expense }: { expense: Expense }) {
             <div className={"flex justify-center items-center h-full bg"}>
               <div className={"flex gap-2"}>
                 <EditExpenseModal
-                  dropdown={dropdown}
                   setDropdown={setDropdown}
                   expense={expense}
                   blockButtons={blockButtons}

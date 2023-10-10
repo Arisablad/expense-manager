@@ -11,7 +11,7 @@ type User = {
 };
 
 type State = {
-  user: User;
+  user: User | Record<string, never>;
   globalMostlyLikedCategories: [string, { count: number; total: number }][];
   globalExpenses: Expense[] | [];
   globalAccounts: Bank[] | [];
@@ -58,7 +58,7 @@ export const useUserStore = create<State & Actions>((set) => ({
   },
   addGlobalAccounts: (data: Bank) => {
     set((state) => ({
-      globalAccounts: [...state.globalAccounts, ...data],
+      globalAccounts: [...state.globalAccounts, ...[data]],
     }));
   },
 }));

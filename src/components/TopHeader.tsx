@@ -21,25 +21,6 @@ import {
 import { useToast } from "@/components/ui/use-toast.ts";
 import AuthService from "@/services/AuthService.tsx";
 
-// const NAVIGATION_ITEMS = [
-//   {
-//     title: "Home",
-//     icon: "some",
-//   },
-//   {
-//     title: "Explore",
-//     icon: "some",
-//   },
-//   {
-//     title: "Bell",
-//     icon: "some",
-//   },
-//   {
-//     title: "Messages",
-//     icon: "some",
-//   },
-// ];
-
 export default function TopHeader() {
   const [expand, setExpand] = useState(false);
   const user = useUserStore((state) => state.user);
