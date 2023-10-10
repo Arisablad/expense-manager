@@ -82,7 +82,7 @@ export const getBankAccounts = async (req, res) => {
     return res.status(200).json({ bankAccounts });
   } catch (error) {
     console.log(`Error in getBankAccounts: ${error.message}`);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
