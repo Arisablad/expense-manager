@@ -8,8 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "install-server": "cd backend && npm install",
-    "start-server": "cd backend && node app.js",
+    "install-server": "cd Backend && npm install",
+    "start-server": "cd Backend && node app.js",
     "install-client": "npm install",
     "build-client": "tsc && vite build",
     "start-client": "vite"
