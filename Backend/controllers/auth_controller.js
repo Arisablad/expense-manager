@@ -58,35 +58,39 @@ export const signup = async (req, res) => {
   }
 };
 
-export const signin = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res
-        .status(400)
-        .json({ error: "Username and password are required" });
-    }
+// export const signin = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     if (!username || !password) {
+//       return res
+//         .status(400)
+//         .json({ error: "Username and password are required" });
+//     }
+//
+//     const user = await User.findOne({ username: req.body.username });
+//     const isMatch = await bcrypt.compare(password, user?.password || "");
+//     if (!isMatch | !user) {
+//       return res.status(400).json({ error: "Invalid credentials" });
+//     }
+//     generateTokenAndSetCookies(user._id, res);
+//     res.status(200).json({
+//       message: "Logged in successfully",
+//       user: {
+//         name: user.name,
+//         username: user.username,
+//         email: user.email,
+//         _id: user._id,
+//         bankAccounts: user.bankAccounts,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//     console.log(`Error in signIn: ${error.message}`);
+//   }
+// };
 
-    const user = await User.findOne({ username: req.body.username });
-    const isMatch = await bcrypt.compare(password, user?.password || "");
-    if (!isMatch | !user) {
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-    generateTokenAndSetCookies(user._id, res);
-    res.status(200).json({
-      message: "Logged in successfully",
-      user: {
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        _id: user._id,
-        bankAccounts: user.bankAccounts,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-    console.log(`Error in signIn: ${error.message}`);
-  }
+export const signin = async (req, res) => {
+  res.status(200).send("signin");
 };
 
 export const signout = async (req, res) => {
