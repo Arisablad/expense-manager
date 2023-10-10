@@ -5,13 +5,13 @@ const generateTokenAndSetCookies = (userId, res) => {
     expiresIn: "15d",
   });
 
-  res.cookie("jwt", token, {
+  return res.cookie("jwt", token, {
     maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
     httpOnly: true, // cookie will not be accessible to client
     sameSite: "strict", // csrf
   });
 
-  return token;
+  // return token;
 };
 
 export default generateTokenAndSetCookies;
