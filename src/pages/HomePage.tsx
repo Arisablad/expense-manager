@@ -72,12 +72,12 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (globalAccounts.length === 0 && user.bankAccounts.length > 0) {
+    if (globalAccounts.length === 0 && user?.bankAccounts?.length > 0) {
       void getAccounts();
     }
   }, []);
 
-  if (user.bankAccounts.length === 0) {
+  if (user?.bankAccounts?.length === 0) {
     return <CreateBankAccountForm />;
   }
 

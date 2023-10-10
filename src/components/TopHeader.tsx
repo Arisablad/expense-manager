@@ -3,7 +3,7 @@ import {
   ThreeDotsVertical,
 } from "@/components/icons/SharedIcons.tsx";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserIcon } from "@heroicons/react/20/solid";
 import logo from "@/assets/logo.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,6 +48,7 @@ export default function TopHeader() {
   const { toast } = useToast();
   const { signOutUser } = useUserStore((state) => state);
   const { signOut } = AuthService();
+  const navigate = useNavigate();
   const expandMobileMenu = () => {
     setExpand(!expand);
   };
@@ -69,6 +70,8 @@ export default function TopHeader() {
         });
       });
     signOutUser();
+    localStorage.removeItem("user");
+    navigate("/signin");
   };
 
   return (

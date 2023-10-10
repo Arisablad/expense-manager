@@ -55,6 +55,7 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
         }
         if (data.user) {
           setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
           navigate("/home");
           return;
         }
@@ -85,6 +86,7 @@ function AuthForm({ formType }: { formType: "login" | "register" }) {
         }
         if (data.user) {
           setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
           navigate("/home");
           return;
         }

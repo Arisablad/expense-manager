@@ -19,7 +19,7 @@ const NAVIGATION_ITEMS = [
 
 function Sidebar() {
   const user = useUserStore((state) => state.user);
-  if (user.bankAccounts.length === 0) {
+  if (user?.bankAccounts?.length === 0) {
     return null;
   }
   return (

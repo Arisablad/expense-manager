@@ -1,12 +1,21 @@
-import { Navigate } from "react-router-dom";
-import { useUserStore } from "@/providers/ZusStore.tsx";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const user = useUserStore((state) => state.user);
-  if (Object.keys(user).length > 0) {
-    return children;
-  }
-  return <Navigate to="/signin" />;
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const checkUserToken = () => {
+    const userToken = localStorage.getItem("user");
+    if (!userToken || userToken === "undefined") {
+      setIsLoggedIn(false);
+      return navigate("/signin");
+    }
+    setIsLoggedIn(true);
+  };
+  useEffect(() => {
+    checkUserToken();
+  }, [isLoggedIn]);
+  return <>{isLoggedIn ? children : null}</>;
 };
 
 export default PrivateRoute;

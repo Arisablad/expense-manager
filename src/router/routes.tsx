@@ -5,7 +5,6 @@ import Login from "@/pages/Login.tsx";
 import Layout from "@/components/containers/Layout.tsx";
 import HomePage from "@/pages/HomePage.tsx";
 import PrivateRoute from "@/router/PrivateRoute.tsx";
-import Bills from "@/pages/Bills.tsx";
 import Expenses from "@/pages/Expenses.tsx";
 import Settings from "@/pages/Settings.tsx";
 

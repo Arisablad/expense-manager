@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import TopHeader from "@/components/TopHeader.tsx";
 import Sidebar from "@/components/Sidebar.tsx";
+import { useUserStore } from "@/providers/ZusStore.tsx";
 
 function Layout({ children }: { children?: React.ReactNode }) {
   return (
