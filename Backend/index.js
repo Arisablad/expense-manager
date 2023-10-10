@@ -27,25 +27,15 @@ app.use(
   }),
 );
 
-// app.use((req, res, next) => {
-//   res.header(
-//     "Access-Control-Allow-Origin",
-//     "https://expense-manager-five-green.vercel.app",
-//   );
-//   res.header("Access-Control-Allow-Credentials", "true");
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
-
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" })); // To parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })); // To parse form data in the req.body
 
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  await connectDB();
+await connectDB().then(() => {
+  app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
 
 app.get("/", (req, res) => {
