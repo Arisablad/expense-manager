@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: `https://relieved-frock-hen.cyclic.app/api`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}`,
   withCredentials: true,
 });
 
