@@ -1,11 +1,18 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "*.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "commands": [
+      "npm install",
+      "cd ..",
+      "npm install",
+      "npm run build",
+      "mv ./dist ./backend"
+    ],
+    "use": "vercel-builder-custom"
+  },
   "routes": [
     {
       "src": "/(.*)",
