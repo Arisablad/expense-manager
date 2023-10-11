@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon index.js",
     "start": "node index.js",
-    "build": "npm install && cd ../ && npm install && npm run build && mv ./dist ./backend",
+    "build": "npm install && cd .. && npm install && npm run build && mv ./dist ./backend",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
