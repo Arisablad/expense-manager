@@ -7,11 +7,21 @@ import bankAccountRoutes from "./routes/bankAccountRoutes.js";
 import cookieParser from "cookie-parser";
 import expensesRoutes from "./routes/expensesRoutes.js";
 import bodyParser from "body-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 // import routes from './routes';
 
 dotenv.config();
 const PORT = process.env.PORT || 5003;
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 // const origin =
 //   process.env.NODE_ENV === "development"
