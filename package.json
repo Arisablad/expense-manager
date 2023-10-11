@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "install-app": "npm install && cd Backend && npm install",
-    "start-app": "cd Backend && node index.js",
+    "start": "cd Backend && node index.js",
     "start-client": "vite"
   },
   "dependencies": {
