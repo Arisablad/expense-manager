@@ -6,8 +6,7 @@ import ExpensesService from "@/services/ExpensesService.tsx";
 import { useToast } from "@/components/ui/use-toast.ts";
 import { useUserStore } from "@/providers/ZusStore.tsx";
 import EditExpenseModal from "@/components/modals/EditExpenseModal.tsx";
-import * as dayjs from "dayjs";
-
+import dayjs from "dayjs";
 function TransactionHistoryItem({ expense }: { expense: Expense }) {
   const [dropdown, setDropdown] = useState(false);
   const { removeExpenseFromDb } = ExpensesService();
